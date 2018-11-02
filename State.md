@@ -26,7 +26,7 @@ State is the crucial part of describing screen's logic in Trafi. It's a simple t
 3. Computed queries to read stored data
 
 <details>
-<summary>🔎 <i>See simple example</i></summary>
+<summary>🔎 <i>See a simple example</i></summary>
 <table>
 <tr><th>iOS</th><th>Android</th></tr>
 <tr>
@@ -100,7 +100,24 @@ There're many ways how you could write them. We can recommend following these st
   - 🔁 Continue writing tests for all events and queries
 
 ### What can be an event?
-Things that happened
+Anything that just happened that state needs to know. Events can be easily understood and listed by non-developers. Most of events come from a few places:
+- User interactions
+  - `tappedSearch`
+  - `tappedResult`
+  - `completedEditing`
+  - `pulledToRefresh`
+- Networking
+  - `loadedSearchResults`
+  - `loadedMapData`
+- Screen updates
+  - `becameReadyForRefresh`
+  - `becameVisible`
+- Global changes
+  - `wentOffline`
+  - `willEnterBackground`
+  - `changedCurrentLocation`
+
+It's common for events to carry related information.
 
 ### What are queries?
 Things you want to know about state
