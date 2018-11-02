@@ -182,17 +182,17 @@ The output of state, the exposed getters. Controller listens to state changes th
   - `dismiss: Void?`
 
 ### What about commands?
-They're the returned side effects not persisted in state
+[WIP] They're the returned side effects not persisted in state
 
 ### What to store privately?
-Information used to answer queries
+[WIP] Information used to answer queries
 
 ### What does the reducer do?
-Changes privately stored info according to the event
+[WIP] Changes privately stored info according to the event
 
 
 ## How do I write specs?
-In a BDD style. For iOS we use [`Quick` and `Nible`](https://github.com/Quick/Quick), for Android [`Spek`](https://github.com/spekframework/spek).
+[WIP] In a BDD style. For iOS we use [`Quick` and `Nible`](https://github.com/Quick/Quick), for Android [`Spek`](https://github.com/spekframework/spek).
 
 ## How do I use states?
-iOS uses states in a reactive way using [RxFeedback](https://github.com/NoTests/RxFeedback.swift).
+[WIP] iOS uses states in a reactive way using [RxFeedback](https://github.com/NoTests/RxFeedback.swift).
