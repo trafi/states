@@ -1,0 +1,100 @@
+# FAQ about State
+
+- [🤔 **Why** should I use states?](#why-should-i-use-states)
+- [🖼 **What** is a state?](#what-is-a-state)
+- [👨‍🎨 **How** do I write states?](#how-do-i-write-states)
+  - [What can be an **event**?](#what-can-be-an-event)
+  - [What are **queries**?](#what-are-queries)
+  - [What to **store privately**?](#what-to-store-privately)
+  - [What does the **reducer** do?](#what-does-the-reducer-do)
+  - [What about **commands**?](#what-about-commands)
+
+---
+
+## Why should I use states?
+
+We're using states in Trafi for a few reasons that you should care about:
+1. States help us share solutions between platforms
+2. States break down big problems to small pieces
+3. States keep our code pure and easily testable
+
+## What is a state?
+
+State is the crucial part of describing screen's logic in Trafi. It's a simple type with three main parts:
+1. Privately stored data
+2. Enum of events to create new state
+3. Computed queries to read stored data
+
+<details>
+<summary>🔎 <i>See example</i></summary>
+<table>
+<tr><th>iOS</th><th>Android</th></tr>
+<tr>
+<td>
+
+```swift
+struct CoinState {
+
+  // 1. Privately stored data
+  private var isHeads: Bool = true
+  
+  // 2. Enum of events
+  enum Event {
+    case flipToHeads
+    case flipToTails
+  }
+  // .. to create new state
+  static func reduce(state: CoinState,
+                     event: Event) -> CoinState {
+    switch event {
+    case .flipToHeads:
+      return CoinState(isHeads: true)
+    case .flipToTails:
+      return CoinState(isHeads: false)
+    }
+  }
+  
+  // 3. Computed queries to read stored data
+  var coinSide: String {
+    return isHead ? "Heads" : "Tails"
+  }
+}
+```
+
+</td>
+<td>
+
+```kotlin
+data class CoinState {
+
+  // 1. Privately stored data
+  
+  // 2. Enum of events
+  // .. to create new state
+  
+  // 3. Computed queries to read stored data
+}
+```
+
+</td>
+</tr>
+</table>
+</details>
+
+## How do I write states?
+BDD
+
+### What can be an event?
+Things that happened
+
+### What are queries?
+Things you want to know about state
+
+### What to store privately?
+Information used to answer queries
+
+### What does the reducer do?
+Changes privately stored info according to the event
+
+### What about commands?
+They're the returned side effects not persisted in state
