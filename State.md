@@ -5,12 +5,34 @@
 - [👨‍🎨 **How** do I write states?](#how-do-i-write-states)
   - [What can be an **event**?](#what-can-be-an-event)
   - [What are **queries**?](#what-are-queries)
+  - [What about **commands**?](#what-about-commands)
   - [What to **store privately**?](#what-to-store-privately)
   - [What does the **reducer** do?](#what-does-the-reducer-do)
-  - [What about **commands**?](#what-about-commands)
-- [🤖 **How** do I write specs?](#how-do-i-write-specs)
+- [✅ **How** do I write specs?](#how-do-i-write-specs)
+- [📱 **How** do I use states?](#how-do-i-use-states)
 
----
+## Graph
+
+<big><pre>
+╔══════════════════════════╗
+║          [**STATE**](#how-do-i-write-states)           ║
+╟──────────────────────────╢
+║ [Reducer](#what-does-the-reducer-do) ◀───▶ [Properties](#what-to-store-privately) ║
+║    ▲               │     ║
+║    │               ▼     ║
+║  [Events](#what-can-be-an-event)         [Queries](#what-are-queries)  ║
+╚════╪═══════════════╪═════╝
+·   ─┼─             ─┼─
+·    │  ┌─────────┐  │
+·    ├─┼┼◀ [**TESTS**](#how-do-i-write-specs) ◀┼┼─┤
+·    │  └─────────┘  │
+·   ═╪═             ═╪═
+╔════╪═══════════════╪═════╗
+║    └─◀ [Feedback ↻](#how-do-i-use-states) ◀┘     ║
+╟──────────────────────────╢
+║        [**CONTROLLER**](#how-do-i-use-states)        ║
+╚══════════════════════════╝
+</pre></big>
 
 ## Why should I use states?
 
@@ -145,7 +167,22 @@ data class MyCommuteState() {
 </details>
 
 ### What are queries?
-Things you want to know about state
+The output of state, the exposed getters. Controller listens to state changes through queries. Like events, queries are simple enough to be understood and listed by non-developers. There are a few categories that most queries can be assigned to:
+- _UI_. These are usually non-optional queries that specific UI elements are binded to, e.g:
+  - `isLoading: Bool`
+  - `paymentOptions: [PaymentOption]`
+  - `stopHeader: StopHeader`
+- _Data_. These are usually optional queries that controllers react to. Their names indicate how to react and their types give associated information if needed, e.g:
+  - `loadAutocompleteResults: String?`
+  - `loadNearbyStops: LatLng?`
+  - `syncFavorites: Void?`
+- _Flow_. These are always optional queries that are just proxies for commands, e.g.:
+  - `showStop: StopState?`
+  - `showTrack: TrackState?`
+  - `dismiss: Void?`
+
+### What about commands?
+They're the returned side effects not persisted in state
 
 ### What to store privately?
 Information used to answer queries
@@ -153,9 +190,9 @@ Information used to answer queries
 ### What does the reducer do?
 Changes privately stored info according to the event
 
-### What about commands?
-They're the returned side effects not persisted in state
-
 
 ## How do I write specs?
-In a BDD style. For iOS we use [`Quick` and `Nible`](https://github.com/Quick/Quick), for Android [`Spek`](https://github.com/spekframework/spek)
+In a BDD style. For iOS we use [`Quick` and `Nible`](https://github.com/Quick/Quick), for Android [`Spek`](https://github.com/spekframework/spek).
+
+## How do I use states?
+iOS uses states in a reactive way using [RxFeedback](https://github.com/NoTests/RxFeedback.swift).
