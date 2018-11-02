@@ -8,6 +8,7 @@
   - [What to **store privately**?](#what-to-store-privately)
   - [What does the **reducer** do?](#what-does-the-reducer-do)
   - [What about **commands**?](#what-about-commands)
+- [🤖 **How** do I write specs?](#how-do-i-write-specs)
 
 ---
 
@@ -154,3 +155,7 @@ Changes privately stored info according to the event
 
 ### What about commands?
 They're the returned side effects not persisted in state
+
+
+## How do I write specs?
+In a BDD style. For iOS we use [`Quick` and `Nible`](https://github.com/Quick/Quick), for Android [`Spek`](https://github.com/spekframework/spek)
