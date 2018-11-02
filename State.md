@@ -13,10 +13,10 @@
 
 ## Why should I use states?
 
-We're using states in Trafi for a few reasons that you should care about:
-1. States help us share solutions between platforms
-2. States break down big problems to small pieces
-3. States keep our code pure and easily testable
+We're using states in Trafi for a few reasons:
+- States help us share solutions between platforms
+- States break down big problems to small pieces
+- States keep our code pure and easily testable
 
 ## What is a state?
 
@@ -26,7 +26,7 @@ State is the crucial part of describing screen's logic in Trafi. It's a simple t
 3. Computed queries to read stored data
 
 <details>
-<summary>🔎 <i>See example</i></summary>
+<summary>🔎 <i>See simple example</i></summary>
 <table>
 <tr><th>iOS</th><th>Android</th></tr>
 <tr>
@@ -81,8 +81,23 @@ data class CoinState {
 </table>
 </details>
 
+#### Examples
+- [StopState.swift](https://github.com/trafi/trafi-publictransport-ios/blob/develop/PublicTransport/Stop/StopState.swift)
+- [SearchState.swift](https://github.com/trafi/trafi-publictransport-ios/blob/develop/PublicTransport/Search/SearchState.swift)
+- [MyCommuteState.swift](https://github.com/trafi/trafi-ios/blob/feature/my-commute/trafi/Code/MyCommute/MyCommuteState.swift) and [MyCommuteState.kt](https://github.com/trafi/trafi-android/blob/my-commute/trafi/src/main/java/com/trafi/android/ui/mycommute/MyCommuteState.kt)
+- [MyCommuteEditState.swift](https://github.com/trafi/trafi-ios/blob/feature/my-commute/trafi/Code/MyCommute/MyCommuteEdit/MyCommuteEditState.swift) and [MyCommuteEditState.kt](https://github.com/trafi/trafi-android/blob/my-commute/trafi/src/main/java/com/trafi/android/ui/mycommute/edit/MyCommuteEditState.kt)
+
 ## How do I write states?
-BDD
+There're many ways how you could write them. We can recommend following these steps:
+- Draft an interface:
+  - List events that could happen
+  - List queries to display UI and load data
+  - List commands for navigation flow
+- Implement the internals:
+  - ❌ Write a failing test that sends an event and asserts a query
+  - ✅ Add code to state till test passes
+  - 🛠 Refactor code so it's nice, but all tests still pass
+  - 🔁 Continue writing tests for all events and queries
 
 ### What can be an event?
 Things that happened
