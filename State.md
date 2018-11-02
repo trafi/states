@@ -27,11 +27,8 @@ State is the crucial part of describing screen's logic in Trafi. It's a simple t
 
 <details>
 <summary>🔎 <i>See a simple example</i></summary>
-<table>
-<tr><th>iOS</th><th>Android</th></tr>
-<tr>
-<td>
 
+#### iOS
 ```swift
 struct CoinState {
 
@@ -44,13 +41,10 @@ struct CoinState {
     case flipToTails
   }
   // .. to create new state
-  static func reduce(state: CoinState,
-                     event: Event) -> CoinState {
+  static func reduce(state: CoinState, event: Event) -> CoinState {
     switch event {
-    case .flipToHeads:
-      return CoinState(isHeads: true)
-    case .flipToTails:
-      return CoinState(isHeads: false)
+    case .flipToHeads: return CoinState(isHeads: true)
+    case .flipToTails: return CoinState(isHeads: false)
     }
   }
   
@@ -61,9 +55,7 @@ struct CoinState {
 }
 ```
 
-</td>
-<td>
-
+#### Android
 ```kotlin
 data class CoinState {
 
@@ -76,9 +68,6 @@ data class CoinState {
 }
 ```
 
-</td>
-</tr>
-</table>
 </details>
 
 #### Examples
@@ -117,7 +106,42 @@ Anything that just happened that state needs to know. Events can be easily under
   - `willEnterBackground`
   - `changedCurrentLocation`
 
-It's common for events to carry related information.
+As events are something that just happened we start their names with verbs in past simple tense.
+
+<details>
+<summary>🔎 <i>See an example</i></summary>
+  
+#### iOS
+```swift
+struct MyCommuteState {
+  enum Event {
+    case refetched(MyCommuteResponse)
+    case wentOffline
+    case loggedIn(Bool)
+    case activatedTab(Int)
+    case tappedFavorite(MyCommuteTrackStopFavorite)
+    case tappedFeedback(MyCommuteUseCase, MyCommuteFeedbackRating)
+    case completedFeedback(String)
+  }
+}
+```
+
+#### Android
+```kotlin
+data class MyCommuteState() {
+  sealed class Event {
+    data class Refetched(val response: MyCommuteResponse) : Event()
+    object WentOffline : Event()
+    data class LoggedIn(val isLoggedIn: Boolean) : Event()
+    data class ActivatedTab(val index: Int) : Event()
+    data class TappedFavorite(val favorite: MyCommuteTrackStopFavorite) : Event()
+    data class TappedFeedback(val feedback: Feedback) : Event()
+    data class CompletedFeedback(val message: String) : Event()
+  }
+}
+```
+
+</details>
 
 ### What are queries?
 Things you want to know about state
