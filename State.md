@@ -7,9 +7,9 @@
   - [🗂 What are **queries**?](#what-are-queries)
   - [📣 What about **commands**?](#what-about-commands)
   - [🗃 What to **store privately**?](#what-to-store-privately)
-  - [👨‍⚖️ What does the **reducer** do?](#what-does-the-reducer-do)
-- [✅ **How** do I write specs?](#how-do-i-write-specs)
-- [📱 **How** do I use states?](#how-do-i-use-states)
+  - [⚖️ What does the **reducer** do?](#what-does-the-reducer-do)
+- [👨‍🔬 **How** do I write specs?](#how-do-i-write-specs)
+- [👨‍🔧 **How** do I use states?](#how-do-i-use-states)
 
 ## Graph
 
