@@ -40,6 +40,12 @@ We're using states in Trafi for a few reasons:
 - States help us share solutions between platforms
 - States break down big problems to small pieces
 - States keep our code pure and easily testable
+- State make debugging easier with a single pure function
+
+## Why shouldn't I use states?
+- It's an unusual development flow
+- Overhead for very simple cases
+- Takes time and practice to integrate to existing code
 
 ## What is a state?
 
@@ -101,7 +107,7 @@ data class CoinState {
 
 ## How do I write states?
 There're many ways how you could write them. We can recommend following these steps:
-- Draft an interface:
+- Draft a platform-independent interface:
   - List events that could happen
   - List queries to display UI and load data
   - List commands for navigation flow
@@ -112,7 +118,7 @@ There're many ways how you could write them. We can recommend following these st
   - 🔁 Continue writing tests for all events and queries
 
 ### What can be an event?
-Anything that just happened that state needs to know. Events can be easily understood and listed by non-developers. Most of events come from a few places:
+Anything that just happened that state needs to know. Events can be easily understood and listed by non-developers. Most events come from a few places:
 - User interactions
   - `tappedSearch`
   - `tappedResult`
@@ -126,7 +132,7 @@ Anything that just happened that state needs to know. Events can be easily under
   - `becameVisible`
 - Global changes
   - `wentOffline`
-  - `willEnterBackground`
+  - `enteredBackground`
   - `changedCurrentLocation`
 
 As events are something that just happened we start their names with verbs in past simple tense.
@@ -141,7 +147,7 @@ struct MyCommuteState {
     case refetched(MyCommuteResponse)
     case wentOffline
     case loggedIn(Bool)
-    case activatedTab(Int)
+    case activatedTab(index: Int)
     case tappedFavorite(MyCommuteTrackStopFavorite)
     case tappedFeedback(MyCommuteUseCase, MyCommuteFeedbackRating)
     case completedFeedback(String)
@@ -168,7 +174,7 @@ data class MyCommuteState() {
 
 ### What are queries?
 The output of state, the exposed getters. Controller listens to state changes through queries. Like events, queries are simple enough to be understood and listed by non-developers. There are a few categories that most queries can be assigned to:
-- _UI_. These are usually non-optional queries that specific UI elements are binded to, e.g:
+- _UI_. These are usually non-optional queries that specific UI elements are bound to, e.g:
   - `isLoading: Bool`
   - `paymentOptions: [PaymentOption]`
   - `stopHeader: StopHeader`
