@@ -48,7 +48,7 @@ We use states in Trafi for a few reasons:
 
 ## What is a state?
 
-A state is the crucial part of describing a screen's logic. It's a simple type with three main parts:
+A state is the brains of a screen. It makes all the important decisions. It's a simple type with three main parts:
 1. Privately stored data
 2. Enum of events to create new state
 3. Computed outputs to be handled by the controller
