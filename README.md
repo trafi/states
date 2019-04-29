@@ -38,8 +38,8 @@
 We use states in Trafi for a few reasons:
 - States break down big problems to small pieces
 - States keep our code pure and easily testable
-- States help us share solutions between platforms
-- State make debugging easier with a single pure function
+- States help us share solutions between platforms & languages
+- States make debugging easier with a single pure function
 
 ## Why shouldn't I use states?
 - It's an unusual development flow
@@ -56,7 +56,7 @@ A state is the crucial part of describing a screen's logic. It's a simple type w
 <details>
 <summary>🔎 <i>See a simple example</i></summary>
 
-#### iOS
+#### Swift
 ```swift
 struct CoinState {
 
@@ -83,7 +83,7 @@ struct CoinState {
 }
 ```
 
-#### Android
+#### Kotlin
 ```kotlin
 
 data class CoinState(
@@ -152,7 +152,7 @@ As events are something that just happened we start their names with verbs in pa
 <details>
 <summary>🔎 <i>See an example</i></summary>
   
-#### iOS
+#### Swift
 ```swift
 struct MyCommuteState {
   enum Event {
@@ -167,7 +167,7 @@ struct MyCommuteState {
 }
 ```
 
-#### Android
+#### Kotlin
 ```kotlin
 data class MyCommuteState(/**/)
 
@@ -200,12 +200,12 @@ Outputs are the exposed getters of state. Controllers listen to state changes th
   - `dismiss: Void?`
 
 ### What to store privately?
-Any properties that are needed to produce the necessary outputs can be stored privately. We strive for this to be the minimal ground truth needed to represent any possible valid state.
+Any properties that are needed to compute the necessary outputs can be stored privately. We strive for this to be the minimal ground truth needed to represent any possible valid state.
 
 <details>
 <summary>🔎 <i>See an example</i></summary>
   
-#### iOS
+#### Swift
 ```swift
 struct PhoneVerificationState {
     private let phoneNumber: String
@@ -213,7 +213,7 @@ struct PhoneVerificationState {
 }
 ```
 
-#### Android
+#### Kotlin
 ```kotlin
 data class PhoneVerificationState(
     private val phoneNumber: String,
@@ -229,7 +229,7 @@ The reducer is a pure function that changes the state's privately stored propert
 <details>
 <summary>🔎 <i>See an example</i></summary>
   
-#### iOS
+#### Swift
 ```swift
 struct CoinState {
     private var isHeads: Bool = true
@@ -237,15 +237,15 @@ struct CoinState {
     static func reduce(_ state: CoinState, event: Event) -> CoinState {
         var result = state
         switch event {
-            case .flipToHeads: result.isHeads = true
-            case .flipToTails: result.isHeads = false
+        case .flipToHeads: result.isHeads = true
+        case .flipToTails: result.isHeads = false
         }
         return result
     }
 }
 ```
 
-#### Android
+#### Kotlin
 ```kotlin
 data class CoinState(private val isHeads: Boolean) {
 
@@ -260,7 +260,145 @@ data class CoinState(private val isHeads: Boolean) {
 
 
 ## How do I write specs?
-[WIP] In a BDD style. For iOS we use [`Quick` and `Nible`](https://github.com/Quick/Quick), for Android [`Spek`](https://github.com/spekframework/spek).
+We write specs (tests) in a BDD style. For Swift we use [`Quick` and `Nible`](https://github.com/Quick/Quick), for Kotlin [`Spek`](https://github.com/spekframework/spek).
+
+<details>
+<summary>🔎 <i>See an example</i></summary>
+  
+#### Swift
+```swift
+class MyCommuteSpec: QuickSpec {
+
+    override func spec() {
+
+        var state: MyCommuteState!
+        beforeEach {
+            state = .initial(response: .dummy, now: .h(10))
+        }
+
+        context("When offline") {
+
+            it("Has no departues") {
+                expect(state)
+                    .after(.wentOffline)
+                    .toTurn { $0.activeFavorites.flatMap { $0.departures }.isEmpty }
+            }
+
+            it("Has no disruptions") {
+                expect(state)
+                    .after(.wentOffline)
+                    .toTurn { $0.activeFavorites.filter { $0.severity != .notAffected }.isEmpty }
+            }
+        }
+    }
+}
+```
+
+#### Kotlin
+```kotlin
+object NearbyStopsStateSpec : Spek({
+    describe("Stops near me") {
+
+        describe("when location is present") {
+            var state = NearbyStopsState(hasLocation = true)
+            beforeEach { state = NearbyStopsState(hasLocation = true) }
+
+            describe("at start") {
+                it("shows progress") { assertEquals(Ui.Progress, state.ui) }
+                it("tries to load stops") { assertTrue(state.loadStops) }
+            }
+        }
+    }
+}
+```
+
+</details>
+
 
 ## How do I use states?
-[WIP] iOS uses states in a reactive way using [RxFeedback](https://github.com/NoTests/RxFeedback.swift).
+States become useful when their outputs are connected to UI, network requests, and other side effects.
+
+Reactive streams compose nicely with the states pattern. We recommend using [RxFeedback.swift](https://github.com/NoTests/RxFeedback.swift) / [RxFeedback.kt](https://github.com/NoTests/RxFeedback.kt) to connect states to side effects in a reactive way.
+
+<details>
+<summary>🔎 <i>See an example</i></summary>
+  
+#### Swift
+```swift
+Driver.system(
+        initialState: input,
+        reduce: PhoneVerificationState.reduce,
+        feedback: uiBindings() + dataBindings() + [produceOutput()])
+    .drive()
+    .disposed(by: rx_disposeBag)
+```
+
+</details>
+
+States are versatile and can be used with more traditional patterns, e.g. observer / listener.
+
+<details>
+<summary>🔎 <i>See an example</i></summary>
+  
+#### Kotlin (Android)
+```kotlin
+
+private val machine = StateMachine(PhoneVerificationState("+00000000000"))
+
+machine.subscribeWithAutoDispose(viewLifecycleOwner) { boundState, newState ->
+    // do things with newState
+}
+
+
+// boring implementation below
+
+typealias OnStateUpdate<T> = (boundState: T?, newState: T) -> Unit
+
+interface StateListener<T : State<T, E>, in E> {
+    fun onStateUpdated(oldState: T, newState: T)
+}
+
+interface State<out T : State<T, E>, in E> {
+    fun reduce(event: E): T
+}
+
+class StateMachine<T : State<T, E>, E>(initial: T) {
+
+    private val listeners = mutableListOf<StateListener<T, E>>()
+    fun addListener(listener: StateListener<T, E>) = listeners.add(listener)
+    fun removeListener(listener: StateListener<T, E>) = listeners.remove(listener)
+
+    var state: T = initial
+        private set(value) {
+            val oldValue = field
+            field = value
+            listeners.forEach { it.onStateUpdated(oldValue, value) }
+        }
+
+    fun transition(event: E) {
+        state = state.reduce(event)
+    }
+
+}
+
+fun <T : State<T, E>, E> StateMachine<T, E>.subscribeWithAutoDispose(lifecycleOwner: LifecycleOwner,
+                                                                     onUpdate: OnStateUpdate<T>) {
+
+    val listener = object : StateListener<T, E> {
+        override fun onStateUpdated(oldState: T, newState: T) = onUpdate(oldState, newState)
+    }
+
+    lifecycleOwner.lifecycle.addObserver(object : LifecycleObserver {
+        // addObserver will call this if lifecycle is already in STARTED state
+        @OnLifecycleEvent(Lifecycle.Event.ON_START)
+        fun start() = addListener(listener)
+
+        @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+        fun stop() = removeListener(listener)
+    })
+
+    onUpdate(null, state)
+}
+```
+
+</details>
