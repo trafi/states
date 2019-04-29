@@ -1,11 +1,10 @@
-# FAQ about State
+# FAQ about States
 
 - [🤔 **Why** should I use states?](#why-should-i-use-states)
 - [🖼 **What** is a state?](#what-is-a-state)
 - [👨‍🎨 **How** do I write states?](#how-do-i-write-states)
   - [⚡️ What can be an **event**?](#what-can-be-an-event)
-  - [🗂 What are **queries**?](#what-are-queries)
-  - [📣 What about **commands**?](#what-about-commands)
+  - [📣 What are **outputs**?](#what-are-outputs)
   - [🗃 What to **store privately**?](#what-to-store-privately)
   - [⚖️ What does the **reducer** do?](#what-does-the-reducer-do)
 - [👨‍🔬 **How** do I write specs?](#how-do-i-write-specs)
@@ -20,7 +19,7 @@
 ║ [Reducer](#what-does-the-reducer-do) ◀───▶ [Properties](#what-to-store-privately) ║
 ║    ▲               │     ║
 ║    │               ▼     ║
-║  [Events](#what-can-be-an-event)         [Queries](#what-are-queries)  ║
+║  [Events](#what-can-be-an-event)         [Outputs](#what-are-outputs)  ║
 ╚════╪═══════════════╪═════╝
 ·   ─┼─             ─┼─
 ·    │  ┌─────────┐  │
@@ -36,23 +35,23 @@
 
 ## Why should I use states?
 
-We're using states in Trafi for a few reasons:
-- States help us share solutions between platforms
+We use states in Trafi for a few reasons:
 - States break down big problems to small pieces
 - States keep our code pure and easily testable
+- States help us share solutions between platforms
 - State make debugging easier with a single pure function
 
 ## Why shouldn't I use states?
 - It's an unusual development flow
 - Overhead for very simple cases
-- Takes time and practice to integrate to existing code
+- Takes time and practice to integrate into existing code
 
 ## What is a state?
 
-State is the crucial part of describing screen's logic in Trafi. It's a simple type with three main parts:
+A state is the crucial part of describing a screen's logic. It's a simple type with three main parts:
 1. Privately stored data
 2. Enum of events to create new state
-3. Computed queries to read stored data
+3. Computed outputs to be handled by the controller
 
 <details>
 <summary>🔎 <i>See a simple example</i></summary>
@@ -77,24 +76,38 @@ struct CoinState {
     }
   }
   
-  // 3. Computed queries to read stored data
+  // 3. Computed outputs to be handled by the controller
   var coinSide: String {
-    return isHead ? "Heads" : "Tails"
+    return isHeads ? "Heads" : "Tails"
   }
 }
 ```
 
 #### Android
 ```kotlin
-data class CoinState {
 
-  // 1. Privately stored data
-  
-  // 2. Enum of events
-  // .. to create new state
-  
-  // 3. Computed queries to read stored data
+data class CoinState(
+    // 1. Privately stored data
+    private val isHeads: Boolean = true
+)
+
+// 2. Enum of events
+sealed class Event {
+    object FlipToHeads : Event()
+    object FlipToTails : Event()
 }
+
+// .. to create new state
+fun CoinState.reduce(event: Event) = when(event) {
+    FlipToHeads -> copy(isHeads = true)
+    FlipToTails -> copy(isHeads = false)
+}
+  
+// 3. Computed outputs to be handled by the controller
+val CoinState.coinSide: String get() {
+    return isHeads ? "Heads" : "Tails"
+}
+
 ```
 
 </details>
@@ -106,19 +119,18 @@ data class CoinState {
 - [MyCommuteEditState.swift](https://github.com/trafi/trafi-ios/blob/feature/my-commute/trafi/Code/MyCommute/MyCommuteEdit/MyCommuteEditState.swift) and [MyCommuteEditState.kt](https://github.com/trafi/trafi-android/blob/my-commute/trafi/src/main/java/com/trafi/android/ui/mycommute/edit/MyCommuteEditState.kt)
 
 ## How do I write states?
-There're many ways how you could write them. We can recommend following these steps:
+There are many ways to write states. We can recommend following these steps:
 - Draft a platform-independent interface:
   - List events that could happen
-  - List queries to display UI and load data
-  - List commands for navigation flow
+  - List outputs to display UI, load data and navigate
 - Implement the internals:
-  - ❌ Write a failing test that sends an event and asserts a query
+  - ❌ Write a failing test that sends an event and asserts an output
   - ✅ Add code to state till test passes
   - 🛠 Refactor code so it's nice, but all tests still pass
-  - 🔁 Continue writing tests for all events and queries
+  - 🔁 Continue writing tests for all events and outputs
 
 ### What can be an event?
-Anything that just happened that state needs to know. Events can be easily understood and listed by non-developers. Most events come from a few places:
+Anything that just happened that the state should know about is an event. Events can be easily understood and listed by non-developers. Most events come from a few common sources:
 - User interactions
   - `tappedSearch`
   - `tappedResult`
@@ -127,12 +139,12 @@ Anything that just happened that state needs to know. Events can be easily under
 - Networking
   - `loadedSearchResults`
   - `loadedMapData`
-- Screen updates
+- Screen lifecycle
   - `becameReadyForRefresh`
   - `becameVisible`
-- Global changes
-  - `wentOffline`
   - `enteredBackground`
+- Device
+  - `wentOffline`
   - `changedCurrentLocation`
 
 As events are something that just happened we start their names with verbs in past simple tense.
@@ -157,8 +169,9 @@ struct MyCommuteState {
 
 #### Android
 ```kotlin
-data class MyCommuteState() {
-  sealed class Event {
+data class MyCommuteState(/**/)
+
+sealed class Event {
     data class Refetched(val response: MyCommuteResponse) : Event()
     object WentOffline : Event()
     data class LoggedIn(val isLoggedIn: Boolean) : Event()
@@ -166,35 +179,84 @@ data class MyCommuteState() {
     data class TappedFavorite(val favorite: MyCommuteTrackStopFavorite) : Event()
     data class TappedFeedback(val feedback: Feedback) : Event()
     data class CompletedFeedback(val message: String) : Event()
-  }
 }
 ```
 
 </details>
 
-### What are queries?
-The output of state, the exposed getters. Controller listens to state changes through queries. Like events, queries are simple enough to be understood and listed by non-developers. There are a few categories that most queries can be assigned to:
-- _UI_. These are usually non-optional queries that specific UI elements are bound to, e.g:
+### What are outputs?
+Outputs are the exposed getters of state. Controllers listen to state changes through outputs. Like events, outputs are simple enough to be understood and listed by non-developers. Most outputs can be categorized as:
+- _UI_. These are usually non-optional outputs that specific UI elements are bound to, e.g:
   - `isLoading: Bool`
   - `paymentOptions: [PaymentOption]`
-  - `stopHeader: StopHeader`
-- _Data_. These are usually optional queries that controllers react to. Their names indicate how to react and their types give associated information if needed, e.g:
+  - `profileHeader: ProfileHeader`
+- _Data_. These are usually optional outputs that controllers react to. Their names indicate how to react and their types give associated information if needed, e.g:
   - `loadAutocompleteResults: String?`
   - `loadNearbyStops: LatLng?`
   - `syncFavorites: Void?`
-- _Flow_. These are always optional queries that are just proxies for commands, e.g.:
+- _Navigation_. These are always optional outputs that are just proxies for navigation, e.g.:
   - `showStop: StopState?`
-  - `showTrack: TrackState?`
+  - `showProfile: ProfileState?`
   - `dismiss: Void?`
 
-### What about commands?
-[WIP] They're the returned side effects not persisted in state
-
 ### What to store privately?
-[WIP] Information used to answer queries
+Any properties that are needed to produce the necessary outputs can be stored privately. We strive for this to be the minimal ground truth needed to represent any possible valid state.
+
+<details>
+<summary>🔎 <i>See an example</i></summary>
+  
+#### iOS
+```swift
+struct PhoneVerificationState {
+    private let phoneNumber: String
+    private var waitBeforeRetrySeconds: Int
+}
+```
+
+#### Android
+```kotlin
+data class PhoneVerificationState(
+    private val phoneNumber: String,
+    private val waitBeforeRetrySeconds: Int
+)
+```
+
+</details>
 
 ### What does the reducer do?
-[WIP] Changes privately stored info according to the event
+The reducer is a pure function that changes the state's privately stored properties according to an event.
+
+<details>
+<summary>🔎 <i>See an example</i></summary>
+  
+#### iOS
+```swift
+struct CoinState {
+    private var isHeads: Bool = true
+
+    static func reduce(_ state: CoinState, event: Event) -> CoinState {
+        var result = state
+        switch event {
+            case .flipToHeads: result.isHeads = true
+            case .flipToTails: result.isHeads = false
+        }
+        return result
+    }
+}
+```
+
+#### Android
+```kotlin
+data class CoinState(private val isHeads: Boolean) {
+
+    fun reduce(event: Event) = when(event) {
+        FlipToHeads -> copy(isHeads = true)
+        FlipToTails -> copy(isHeads = false)
+    }
+}
+```
+
+</details>
 
 
 ## How do I write specs?
