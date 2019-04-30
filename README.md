@@ -1,3 +1,5 @@
+[⚡️ Lightning talk intro to states](https://speakerdeck.com/justasm/correct-ui-logic-with-state-machines)
+
 # FAQ about States
 
 - [🤔 **Why** should I use states?](#why-should-i-use-states)
