@@ -7,4 +7,4 @@ This is a screen that allows users to select language for the app. After selecti
 
 | Language selection |
 | --- |
-| ![Language selection](img/selection.png) |
+| <img src="img/selection.png" width=267> |
