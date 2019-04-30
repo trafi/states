@@ -114,11 +114,9 @@ val CoinState.coinSide: String get() {
 
 </details>
 
-#### Examples
-- [StopState.swift](https://github.com/trafi/trafi-publictransport-ios/blob/develop/PublicTransport/Stop/StopState.swift)
-- [SearchState.swift](https://github.com/trafi/trafi-publictransport-ios/blob/develop/PublicTransport/Search/SearchState.swift)
-- [MyCommuteState.swift](https://github.com/trafi/trafi-ios/blob/feature/my-commute/trafi/Code/MyCommute/MyCommuteState.swift) and [MyCommuteState.kt](https://github.com/trafi/trafi-android/blob/my-commute/trafi/src/main/java/com/trafi/android/ui/mycommute/MyCommuteState.kt)
-- [MyCommuteEditState.swift](https://github.com/trafi/trafi-ios/blob/feature/my-commute/trafi/Code/MyCommute/MyCommuteEdit/MyCommuteEditState.swift) and [MyCommuteEditState.kt](https://github.com/trafi/trafi-android/blob/my-commute/trafi/src/main/java/com/trafi/android/ui/mycommute/edit/MyCommuteEditState.kt)
+#### Samples
+- [Language selection](samples/language-selection)
+- [Payment method details](samples/payment-method-details)
 
 ## How do I write states?
 There are many ways to write states. We can recommend following these steps:
