@@ -115,7 +115,7 @@ val CoinState.coinSide: String get() {
 </details>
 
 #### Samples
-- [Payment method (Swift)](samples/payment-method)
+- [Payment method details (Swift)](samples/payment-method-details)
 
 ## How do I write states?
 There are many ways to write states. We can recommend following these steps:
