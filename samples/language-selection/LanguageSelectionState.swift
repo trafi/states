@@ -12,7 +12,7 @@ struct LanguageSelectionState {
         case producingOutput
     }
 
-    private var output: LanguagesViewController.OutputType?
+    private var output: LanguageSelectionViewController.OutputType?
 
     init(currentLanguage: String, hasRegion: Bool) {
         self.currentLanguage = currentLanguage
