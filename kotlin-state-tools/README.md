@@ -1,4 +1,4 @@
-# State for Kotlin
+# Kotlin state tools
 
 ```kotlin
 interface State<out T : State<T, E>, in E> {
