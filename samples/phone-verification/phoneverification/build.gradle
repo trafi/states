@@ -36,8 +36,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0'
-    implementation project(':state')
-    implementation project(':state-android')
+    implementation 'com.trafi.states:state:cc5e2e4cda'
+    implementation 'com.trafi.states:state-android:cc5e2e4cda'
 
     testImplementation 'junit:junit:4.12'
     testImplementation "org.spekframework.spek2:spek-dsl-jvm:$spek_version"

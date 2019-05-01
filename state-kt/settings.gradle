@@ -1,1 +1,1 @@
-include ':state', ':state-android', 'phoneverification'
+include ':state', ':state-android'
