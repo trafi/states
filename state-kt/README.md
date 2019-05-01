@@ -6,7 +6,7 @@ interface State<out T : State<T, E>, in E> {
 }
 ```
 
-See a sample implementation in the [`phoneverification` folder](phoneverification).
+See the [phone verification sample](/samples/phone-verification).
 
 ## Installation
 
