@@ -5,7 +5,7 @@ The code can be entered manually or extracted directly from the SMS, and the use
 
 - [State](/README.md#what-is-a-state): [PhoneVerificationState.kt](phoneverification/src/main/java/com/trafi/phoneverification/PhoneVerificationState.kt)
 - [Machine](/README.md#how-do-i-use-states): [PhoneVerificationFragment.kt](phoneverification/src/main/java/com/trafi/phoneverification/PhoneVerificationFragment.kt)
-- Tests: [PhoneVerificationStateSpec.kt](phoneverification/src/test/java/com/trafi/phoneverification/PhoneVerificationStateSpec.kt)
+- [Tests](/README.md#how-do-i-write-specs): [PhoneVerificationStateSpec.kt](phoneverification/src/test/java/com/trafi/phoneverification/PhoneVerificationStateSpec.kt)
 
 | Phone verification |
 | --- |
