@@ -1,5 +1,8 @@
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
+apply plugin: 'maven'
+
+group = 'com.trafi.states'
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
