@@ -1,4 +1,4 @@
-[⚡️ Lightning talk intro to states](https://speakerdeck.com/justasm/correct-ui-logic-with-state-machines)
+[⚡️ Lightning talk intro to states](https://youtu.be/0fEJe8kX-CE)
 
 # FAQ about States
 
